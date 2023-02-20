@@ -25,13 +25,19 @@ except ImportError:
 RATE = 16000
 
 
-def save_example(dataset_path, audio_frame, label):
+def save_example_feature(dataset_path, audio_frame, label):
 
     melspec = do_melspec(y=audio_frame.astype(np.float32), sr=RATE, n_mels=416, fmax=4000, hop_length=128)
     norm_melspec = pwr_to_db(melspec, ref=np.max)
     spectrogram = (1 - (norm_melspec / -80.0))[:-16, :]
     fn = os.path.join(dataset_path, '{}_{}.npy'.format(label, datetime.now().strftime('%Y%m%d%M%S')))
     np.save(fn, spectrogram)
+
+
+def save_example(dataset_path, audio_frame, label):
+    import wavio
+    fn = os.path.join(dataset_path, '{}_{}.wav'.format(label, datetime.now().strftime('%Y%m%d%M%S')))
+    wavio.write(fn, audio_frame, RATE, sampwidth=2, scale='none')
 
 
 @click.command()
@@ -62,7 +68,7 @@ def make_labels(wav_path=None, data_path=None, assist=None, random=None):
                     frames_per_buffer=RATE,
                     output=True)
 
-    wav_data = wavfile.read(wav_path)[1].astype(np.uint16)
+    wav_data = wavfile.read(wav_path)[1].astype(np.int16)
     data_length = wav_data.shape[0]
 
     if not random:

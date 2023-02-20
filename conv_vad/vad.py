@@ -2,7 +2,7 @@
 A simple class which detects speech.
 """
 from pkg_resources import resource_filename
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 import numpy as np
 
 import librosa
