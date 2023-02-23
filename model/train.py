@@ -17,6 +17,7 @@ import tensorflow as tf
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 from common.utils import optimize_tf_gpu
+from common.callbacks import CheckpointCleanCallBack
 
 optimize_tf_gpu(tf, K)
 
@@ -204,9 +205,9 @@ def train(args):
     reduce_lr = ReduceLROnPlateau(monitor='val_accuracy', factor=0.5, mode='max', patience=20, verbose=1, cooldown=0, min_lr=1e-10)
     early_stopping = EarlyStopping(monitor='val_accuracy', min_delta=0, patience=50, verbose=1, mode='max')
     terminate_on_nan = TerminateOnNaN()
-    #checkpoint_clean = CheckpointCleanCallBack(log_dir, max_keep=5)
+    checkpoint_clean = CheckpointCleanCallBack(log_dir, max_keep=5)
 
-    callbacks = [logging, checkpoint, reduce_lr, early_stopping, terminate_on_nan]
+    callbacks = [logging, checkpoint, reduce_lr, early_stopping, terminate_on_nan, checkpoint_clean]
 
 
     # get train&val dataset

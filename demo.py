@@ -1,6 +1,16 @@
+import os, sys
 from scipy.io import wavfile
 import numpy as np
 import conv_vad
+
+import tensorflow.keras.backend as K
+import tensorflow as tf
+
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+from common.utils import optimize_tf_gpu
+
+optimize_tf_gpu(tf, K)
+
 
 # Conv VAD currently only supports single channel audio at a 16k sample rate.
 RATE = 16000
